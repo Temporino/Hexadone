@@ -1,0 +1,21 @@
+# templates/rest_api_adapter.yaml
+type: api
+name: "{{NAME}}"
+config_template:
+  auth:
+    type: oauth2
+    token_url: "{{TOKEN_URL}}"
+    credentials:
+      client_id: "{{CLIENT_ID}}"  # Variables to replace
+      client_secret: "{{CLIENT_SECRET}}"
+  endpoint:
+    base_url: "{{API_URL}}"
+    path: "{{API_PATH}}"
+    method: GET
+    pagination:
+      type: link_header
+  schema_inference:
+    sample_size: 1000
+    datetime_fields:
+      - "created_at"
+      - "updated_at"

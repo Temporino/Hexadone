@@ -1,0 +1,8 @@
+# configs/client_vars.yaml
+NAME: "name"
+CLIENT_ID: "client_123"
+CLIENT_SECRET: "supersecret"
+BUCKET_NAME: "bronze"
+TOKEN_URL: "token_url"
+API_URL: "api_url"
+API_PATH: "api_path"

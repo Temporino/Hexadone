@@ -1,0 +1,16 @@
+# templates/minio_adapter.yaml
+type: file
+name: "minio_customer_data"
+config_template:
+  storage:
+    bucket: "{{BUCKET_NAME}}"
+    path: "customers/*.parquet"
+    format: parquet
+  credentials:
+    endpoint: "{{MINIO_ENDPOINT}}"
+    access_key: "{{ACCESS_KEY}}"
+    secret_key: "{{SECRET_KEY}}"
+  schema_inference:
+    enforce: true
+    exclude_fields:
+      - "internal_notes"
