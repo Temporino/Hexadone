@@ -4,7 +4,7 @@ from io import BytesIO
 import pandas as pd
 
 
-class MinIOAdapter(DataSourceAdapter):
+class MinioAdapter(DataSourceAdapter):
     def connect(self) -> bool:
         self.client = Minio(
             self.config["storage"]["endpoint"],

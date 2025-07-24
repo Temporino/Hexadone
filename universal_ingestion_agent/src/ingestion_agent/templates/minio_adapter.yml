@@ -1,7 +1,7 @@
 # templates/minio_adapter.yaml
-type: file
+type: minio
 name: "minio_customer_data"
-config_template:
+config:
   storage:
     bucket: "{{BUCKET_NAME}}"
     path: "customers/*.parquet"

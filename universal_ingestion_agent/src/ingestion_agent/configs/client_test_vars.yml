@@ -1,0 +1,5 @@
+# configs/client_test_vars.yaml
+NAME: "test"
+BASE_URL: "https://jsonplaceholder.typicode.com"
+PATH: "/posts"
+SCHEMA_INFERENCE_ENABLED: "false"

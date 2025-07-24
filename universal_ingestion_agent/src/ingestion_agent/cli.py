@@ -2,13 +2,18 @@ import argparse
 import yaml
 import json
 from pathlib import Path
-from utils.template_engine import TemplateEngine
-from utils.adapter_factory import AdapterFactory
-from utils.config_validator import ConfigValidator
+from .utils.template_engine import TemplateEngine
+from .utils.adapter_factory import AdapterFactory
+from .utils.config_validator import ConfigValidator
 
 
 def load_variables_from_file(file_path: str) -> dict:
     """Load variables from YAML/JSON file"""
+    import os
+
+    cwd = os.getcwd()  # Get the current working directory (cwd)
+    files = os.listdir(cwd)  # Get all the files in that directory
+    print("Files in %r: %s" % (cwd, files))
     path = Path(file_path)
     if path.suffix == '.yaml' or path.suffix == '.yml':
         with open(path, 'r') as f:
@@ -42,7 +47,7 @@ def main():
     variables = {}
     if args.vars_file:
         variables.update(load_variables_from_file(args.vars_file))
-    if args.var:
+    elif args.var:
         variables.update(parse_inline_variables(args.var))
 
     # Generate and validate config
@@ -55,7 +60,14 @@ def main():
     data = adapter.normalize()
 
     print(f"Fetched {len(data)} records")
-    data.to_parquet("output.parquet")
+
+    # Apply transformations
+
+    # Save data
+
+    # Save data to parquet TODO add a proper sink function
+    print(data.head())
+    #data.to_parquet("output.parquet")
 
 
 if __name__ == "__main__":

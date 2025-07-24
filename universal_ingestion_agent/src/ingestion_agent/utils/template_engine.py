@@ -2,7 +2,6 @@
 from jinja2 import Template
 import yaml
 
-
 class TemplateEngine:
     @staticmethod
     def generate_config(template_path: str, variables: dict) -> dict:

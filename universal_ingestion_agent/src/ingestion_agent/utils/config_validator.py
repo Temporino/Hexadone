@@ -15,7 +15,7 @@ class ConfigValidator:
         try:
             if adapter_type == "api":
                 RESTAPIConfig(**config)
-            # //TODO Add other config models (MinIO, PostgreSQL, etc.)
+            # TODO Add other config models (MinIO, PostgreSQL, etc.)
             return True
         except ValidationError as e:
             raise ValueError(f"Invalid config: {e}")

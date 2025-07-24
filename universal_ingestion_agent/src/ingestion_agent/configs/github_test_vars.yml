@@ -1,0 +1,13 @@
+# configs/client_test_vars.yaml
+NAME: "github"
+AUTH_TYPE: "oauth2"
+TOKEN_URL: "https://github.com/login/oauth/access_token"
+CLIENT_ID: "Ov23lizYNKWUvHbGOS4q"
+CLIENT_SECRET: "135679a71d78806f0dc1653a82cf3466a05e5a4c"
+TOKEN: "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"
+SCOPES: "repo,user"
+REFRESH_URL: "https://github.com/login/oauth/access_token"
+BASE_URL: "https://api.github.com"
+PATH: "/user/repos"
+SCHEMA_INFERENCE_ENABLED: "false"
+PAGINATION_TYPE: "link_header"

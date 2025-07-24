@@ -1,21 +1,87 @@
 # templates/rest_api_adapter.yaml
 type: api
 name: "{{NAME}}"
-config_template:
+config:
+  # ------ Authentication ------
   auth:
-    type: oauth2
-    token_url: "{{TOKEN_URL}}"
-    credentials:
-      client_id: "{{CLIENT_ID}}"  # Variables to replace
-      client_secret: "{{CLIENT_SECRET}}"
+    type: "{{AUTH_TYPE | default('none')}}"  # oauth2, api_key, basic, jwt, aws_sigv4
+    config:
+      # OAuth2
+      token_url: "{{TOKEN_URL | default('')}}"
+      credentials:
+        client_id: "{{CLIENT_ID}}"
+        client_secret: "{{CLIENT_SECRET}}"
+      token: "{{TOKEN | default('')}}"
+      scopes: "{{SCOPES | default('')}}"
+      # Token Refresh
+      refresh_url: "{{REFRESH_URL}}"
+      refresh_threshold: 300
+      # API Key
+      key_header: "{{API_KEY_HEADER | default('X-API-Key')}}"
+      key_value: "{{API_KEY_VALUE}}"
+      # JWT
+      jwt_issuer: "{{JWT_ISSUER | default('')}}"
+      private_key: "{{JWT_PRIVATE_KEY | default('')}}"
+
+ # ------ Request Configuration ------
   endpoint:
-    base_url: "{{API_URL}}"
-    path: "{{API_PATH}}"
-    method: GET
-    pagination:
-      type: link_header
+    protocol: "{{PROTOCOL | default('https')}}"  # http/https
+    base_url: "{{BASE_URL}}"
+    path: "{{PATH | default('/')}}"
+    method: "{{METHOD | default('GET')}}"  # GET/POST/PUT/PATCH/DELETE
+    query_params:  # Dynamic query parameters # add if necessary
+      - name: "page"
+        value: "{{PAGE_NUMBER | default(1)}}"
+    headers:
+      content_type: "{{CONTENT_TYPE | default('application/json')}}"
+      Accept: "application/json"
+
+  # ------ Payload Handling ------
+  body:
+    type: "{{BODY_TYPE | default('none')}}"  # json/form-data/xml
+    template: |
+      {% if BODY_TYPE == 'json' %}
+      {
+        "filter": {
+          "date": "{{CURRENT_DATE}}"
+        }
+      }
+      {% elif BODY_TYPE == 'form-data' %}
+      grant_type=client_credentials
+      {% endif %}
+
+
+  # ------ Pagination ------
+  pagination:
+    type: "{{PAGINATION_TYPE | default('none')}}"  # link_header/cursor/offset/page_token
+    config:
+      next_page_key: "next_page"  # JSON key or header name
+      stop_condition: "{{STOP_CONDITION | default('no_more_items')}}"  # Custom logic
+
+  # ------ Error Handling ------
+  error_handling:
+    retries: {{RETRIES | default(3)}}
+    retry_delay: "{{RETRY_DELAY | default('5s')}}"  # 5s/10m/1h
+    dead_letter_queue: "{{DLQ_PATH | default('')}}"
+    notify_on_failure: "{{ALERT_CHANNEL | default('')}}"  # slack/email
+
+  # ------ Rate Limiting ------
+  rate_limit:
+    requests_per_second: {{RPS | default(10)}}
+    strategy: "{{RATE_LIMIT_STRATEGY | default('wait')}}"  # wait/fail
+
+  # ------ Proxy & TLS ------
+  network:
+    proxy_url: "{{PROXY_URL | default('')}}"
+    disable_ssl_verify: {{DISABLE_SSL_VERIFY | default(false)}}
+
+  # ------ Schema & Data Handling ------
   schema_inference:
-    sample_size: 1000
-    datetime_fields:
-      - "created_at"
-      - "updated_at"
+    enabled: {{SCHEMA_INFERENCE_ENABLED | default(true)}}
+    sample_size: {{SAMPLE_SIZE | default(1000)}}
+    field_overrides: # Examples
+      - name: "created_at"
+        type: "datetime"
+        format: "%Y-%m-%dT%H:%M:%SZ"  # ISO 8601
+      - name: "price"
+        type: "decimal"
